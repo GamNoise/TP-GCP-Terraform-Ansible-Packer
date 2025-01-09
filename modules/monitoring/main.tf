@@ -30,7 +30,7 @@ resource "google_monitoring_dashboard" "dashboard" {
           }
         },
         {
-          title = "Instance Group Memory Usage"
+          title = "RAM Usage"
           xyChart = {
             dataSets = [{
               timeSeriesQuery = {
