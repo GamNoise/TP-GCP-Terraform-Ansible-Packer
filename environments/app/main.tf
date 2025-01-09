@@ -1,6 +1,6 @@
 terraform {
   backend "gcs" {
-    bucket = "your-terraform-state-bucket"
+    bucket = "terraform-state-app"
     prefix = "terraform/app"
   }
 }
