@@ -1,4 +1,4 @@
-project_id         = "Mettre Project ID"
+project_id        = "cesi-2024-447110"
 region            = "europe-west9"
 network_name      = "app-network"
 subnet_cidr       = "10.0.0.0/24"
