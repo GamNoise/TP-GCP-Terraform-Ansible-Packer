@@ -17,3 +17,13 @@ variable "subnet_cidr" {
   description = "CIDR range for the subnetwork"
   type        = string
 }
+
+variable "lb_subnet_name" {
+  description = "Name of the load balancer subnetwork"
+  type        = string
+}
+
+variable "lb_subnet_cidr" {
+  description = "CIDR range for the load balancer subnetwork"
+  type        = string
+}

@@ -27,3 +27,13 @@ variable "subnet_id" {
   description = "ID of the subnetwork"
   type        = string
 }
+
+variable "region" {
+  description = "Region for compute resources"
+  type        = string
+}
+
+variable "lb_subnet_id" {
+  description = "ID of the load balancer subnetwork"
+  type        = string
+}
