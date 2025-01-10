@@ -11,11 +11,26 @@ provider "google" {
 }
 
 module "networking" {
-  source         = "../modules/networking"
-  network_name   = var.network_name
-  subnet_name    = var.subnet_name
-  subnet_cidr    = var.subnet_cidr
-  region         = var.region
+  source = "./modules/networking"
+
+  vpc_name = var.vpc_name
+  subnets = [
+    {
+      name       = "app-subnet"
+      region     = "europe-west9"
+      cidr_block = "10.0.0.0/24"
+    },
+    {
+      name       = "lb-subnet"
+      region     = "europe-west9"
+      cidr_block = "10.0.1.0/24"
+    }
+  ]
+
+  labels = {
+    environment = var.environment
+    project     = var.project
+  }
 }
 
 module "compute" {
@@ -29,10 +44,23 @@ module "compute" {
 
 
 module "storage" {
-  source          = "../modules/storage"
-  bucket_name     = var.bucket_name
-  location        = var.region
-  is_public       = true
+  source = "./modules/storage"
+
+  bucket_name = var.terraform_state_bucket
+  location    = var.region
+
+  versioning = {
+    enabled = true
+  }
+
+  iam_configuration = {
+    uniform_bucket_level_access = true
+  }
+
+  labels = {
+    environment = var.environment
+    project     = var.project
+  }
 }
 
 module "dns" {
@@ -43,7 +71,19 @@ module "dns" {
 }
 
 module "monitoring" {
-  source          = "../modules/monitoring"
-  project_id      = var.project_id
+  source = "./modules/monitoring"
+
+  metrics = [
+    "traffic_load_balancer",
+    "cpu_usage",
+    "memory_usage",
+    "http_5xx_errors",
+    "latency_load_balancer"
+  ]
+
+  labels = {
+    environment = var.environment
+    project     = var.project
+  }
 }
 

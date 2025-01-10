@@ -11,9 +11,53 @@ provider "google" {
 }
 
 module "artifact_registry" {
-  source            = "../modules/artifact_registry"
-  repository_name   = var.artifact_registry_name
-  location          = var.region
+  source = "./modules/artifact_registry"
+
+  name        = var.registry_name
+  location    = var.region
+  description = "Artifact registry for Go binaries"
+
+  labels = {
+    environment = var.environment
+    project     = var.project
+  }
+}
+
+module "storage" {
+  source = "./modules/storage"
+
+  bucket_name = var.terraform_state_bucket
+  location    = var.region
+
+  versioning = {
+    enabled = true
+  }
+
+  iam_configuration = {
+    uniform_bucket_level_access = true
+  }
+
+  labels = {
+    environment = var.environment
+    project     = var.project
+  }
+}
+
+module "monitoring" {
+  source = "./modules/monitoring"
+
+  metrics = [
+    "traffic_load_balancer",
+    "cpu_usage",
+    "memory_usage",
+    "http_5xx_errors",
+    "latency_load_balancer"
+  ]
+
+  labels = {
+    environment = var.environment
+    project     = var.project
+  }
 }
 
 resource "google_storage_bucket" "terraform_state" {
