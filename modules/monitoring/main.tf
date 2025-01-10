@@ -16,7 +16,3 @@ resource "google_monitoring_dashboard" "app_dashboard" {
     ]
   })
 }
-
-output "dashboard_id" {
-  value = google_monitoring_dashboard.app_dashboard.id
-}
