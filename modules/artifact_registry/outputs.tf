@@ -1,4 +1,4 @@
-output "repository_id" {
-  value       = google_artifact_registry_repository.go_repo.repository_id
-  description = "ID du repository"
+output "repository_name" {
+  description = "Name of the artifact repository"
+  value       = google_artifact_registry_repository.repo.name
 }

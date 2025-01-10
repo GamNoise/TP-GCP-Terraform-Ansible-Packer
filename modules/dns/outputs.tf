@@ -1,4 +1,4 @@
-output "name_servers" {
-  value       = google_dns_managed_zone.zone.name_servers
-  description = "Name servers de la zone DNS"
+output "dns_zone_name" {
+  description = "Name of the DNS zone"
+  value       = google_dns_managed_zone.primary.name
 }

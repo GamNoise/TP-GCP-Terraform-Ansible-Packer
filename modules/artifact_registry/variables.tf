@@ -1,14 +1,9 @@
-variable "project_id" {
+variable "repository_name" {
+  description = "Name of the artifact repository"
   type        = string
-  description = "ID du projet GCP"
 }
 
 variable "location" {
+  description = "Location of the artifact repository"
   type        = string
-  description = "Localisation du repository"
-}
-
-variable "repository_name" {
-  type        = string
-  description = "Nom du repository Go"
 }

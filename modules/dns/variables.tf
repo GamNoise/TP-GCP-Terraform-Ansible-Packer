@@ -1,19 +1,14 @@
-variable "project_id" {
-  type        = string
-  description = "ID du projet GCP"
-}
-
 variable "dns_zone_name" {
+  description = "Name of the DNS zone"
   type        = string
-  description = "Nom de la zone DNS"
 }
 
 variable "domain_name" {
+  description = "Domain name for the zone"
   type        = string
-  description = "Nom de domaine"
 }
 
-variable "load_balancer_ip" {
+variable "environment" {
+  description = "Environment label for DNS"
   type        = string
-  description = "IP du load balancer"
 }

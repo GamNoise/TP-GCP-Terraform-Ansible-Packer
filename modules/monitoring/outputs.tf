@@ -1,4 +1,4 @@
-output "dashboard_name" {
-  value       = google_monitoring_dashboard.dashboard.dashboard_json
-  description = "Nom du dashboard de monitoring"
+output "dashboard_id" {
+  description = "ID of the Monitoring Dashboard"
+  value       = google_monitoring_dashboard.app_dashboard.id
 }

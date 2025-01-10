@@ -1,14 +1,9 @@
 output "network_id" {
-  value       = google_compute_network.vpc.id
-  description = "ID du VPC"
+  description = "ID of the VPC network"
+  value       = google_compute_network.vpc_network.id
 }
 
 output "subnet_id" {
-  value       = google_compute_subnetwork.subnet.id
-  description = "ID du subnet principal"
-}
-
-output "lb_subnet_id" {
-  value       = google_compute_subnetwork.lb_subnet.id
-  description = "ID du subnet du load balancer"
+  description = "ID of the subnetwork"
+  value       = google_compute_subnetwork.subnetwork.id
 }
