@@ -1,23 +1,25 @@
-resource "google_storage_bucket" "bucket" {
-  name          = var.bucket_name
-  location      = var.location
-  project       = var.project_id
-  force_destroy = true
+resource "google_storage_bucket" "static_assets" {
+  name                        = var.bucket_name
+  location                    = var.location
+  storage_class               = var.storage_class
+  uniform_bucket_level_access = var.uniform_bucket_level_access
 
-  uniform_bucket_level_access = true
-
-  dynamic "website" {
-    for_each = var.is_public ? [1] : []
-    content {
-      main_page_suffix = "index.html"
-      not_found_page   = "404.html"
+  lifecycle_rule {
+    action {
+      type = "Delete"
+    }
+    condition {
+      age = var.lifecycle_age
     }
   }
+
+  versioning {
+    enabled = var.versioning_enabled
+  }
+
+  labels = var.labels
 }
 
-resource "google_storage_bucket_iam_member" "public_access" {
-  count  = var.is_public ? 1 : 0
-  bucket = google_storage_bucket.bucket.name
-  role   = "roles/storage.objectViewer"
-  member = "allUsers"
+output "bucket_name" {
+  value = google_storage_bucket.static_assets.name
 }
