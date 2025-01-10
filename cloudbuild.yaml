@@ -1,49 +1,25 @@
 steps:
-  # Step 1: Verification des "secrets"
+  # Étape 1 : Scan des secrets
   - name: 'gcr.io/cloud-builders/gcloud'
     entrypoint: 'bash'
     args:
       - '-c'
-      - >
+      - |
         gcloud secrets scan . || echo "No secrets found";
 
-  # Step 2: Verification des vulnérabilts potentielles
+  # Étape 2 : Scan de vulnérabilités des dépendances
   - name: 'gcr.io/cloud-builders/docker'
-    args:
-      - 'run'
-      - '--rm'
-      - 'anchore/scan'
-      - '.'
+    args: ['run', '--rm', 'anchore/scan', '.']
 
-  # Step 3: Build de l'app
+  # Étape 3 : Build de l'application Go
   - name: 'gcr.io/cloud-builders/go'
-    args:
-      - 'build'
-      - '-o'
-      - 'app-binary'
+    args: ['build', '-o', 'app-binary', '.']
 
-  # Step 4: Envoie vers "l'artefact registry"
+  # Étape 4 : Build et push de l'image Docker
   - name: 'gcr.io/cloud-builders/docker'
-    args:
-      - 'push'
-      - 'gcr.io/$PROJECT_ID/go-app:${_VERSION}'
-
-# Validation du Formattage du Terraform
-  - name: 'hashicorp/terraform'
-    entrypoint: 'sh'
-    args:
-      - '-c'
-      - |
-        terraform fmt -recursive && terraform validate;
-
-  # Terraform Init and Apply
-  - name: 'hashicorp/terraform'
-    args:
-      - 'init'
-  - name: 'hashicorp/terraform'
-    args:
-      - 'apply'
-      - '-auto-approve'
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/app-binary:${_VERSION}', '.']
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/app-binary:${_VERSION}']
 
 substitutions:
   _VERSION: "1.0.0"
