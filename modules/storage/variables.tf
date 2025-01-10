@@ -12,3 +12,13 @@ variable "is_public" {
   description = "Whether the bucket is public"
   type        = bool
 }
+
+variable "region" {
+  description = "Region for the subnetwork"
+  type        = string
+}
+
+variable "project_id" {
+  type        = string
+  description = "ID du projet GCP pour Ops"
+}

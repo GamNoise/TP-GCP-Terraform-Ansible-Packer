@@ -34,6 +34,18 @@ resource "google_storage_bucket_iam_member" "public_access" {
   member = "allUsers"
 }
 
+resource "google_storage_bucket" "terraform_state" {
+  name                        = "terraform-state-${var.project_id}"
+  location                    = var.region
+  force_destroy               = true
+  uniform_bucket_level_access = true
+
+  versioning {
+    enabled = true
+  }
+}
+
+
 output "bucket_name" {
   value = google_storage_bucket.static_assets.name
 }
