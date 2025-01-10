@@ -1,33 +1,33 @@
-# Étape 1 : Construction de l'application
-FROM golang:1.20 AS builder
+# Image Alpine
+FROM golang:alpine AS builder
 
-# Définir le répertoire de travail
-WORKDIR /app
+# Mise en place des variables d'environnements
+ENV CGO_ENABLED=0 \
+    GOOS=linux \
+    GOARCH=amd64 \
+    APP_NAME=app-binary
 
-# Copier les fichiers go.mod et go.sum pour télécharger les dépendances
+# Changer de repertoire de travail
+WORKDIR /src
+
+# Copier les manifestes des modules
 COPY go.mod go.sum ./
+
+# Téléchargement des depndances
 RUN go mod download
 
-# Copier le reste des fichiers de l'application
+# Copy du Code
 COPY . .
 
-# Compiler l'application
-RUN go build -o main .
+# Build de l'app
+RUN go build -o /bin/$APP_NAME ./
 
-# Étape 2 : Image finale pour l'exécution
+
 FROM alpine:latest
-
-# Définir le répertoire de travail
-WORKDIR /root/
-
-# Copier l'application construite depuis l'étape précédente
-COPY --from=builder /app/main .
-
-# Copier les fichiers nécessaires pour l'exécution (si applicable)
-COPY templates/ ./templates
-
-# Exposer le port par défaut (à ajuster si différent)
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+WORKDIR /app
+COPY --from=builder /bin/$APP_NAME ./
+RUN chmod +x $APP_NAME
+USER appuser
 EXPOSE 8080
-
-# Commande pour exécuter l'application
-CMD ["./main"]
+CMD ["./app-binary"]
