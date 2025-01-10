@@ -10,6 +10,17 @@ provider "google" {
   region  = var.region
 }
 
+resource "google_storage_bucket" "terraform_state" {
+  name                        = "terraform-state-${var.project_id}"
+  location                    = var.region
+  force_destroy               = true
+  uniform_bucket_level_access = true
+
+  versioning {
+    enabled = true
+  }
+}
+
 module "artifact_registry" {
   source = "../../modules/artifact_registry"
 
@@ -30,18 +41,6 @@ module "storage" {
 module "monitoring" {
   source    = "../../modules/monitoring"
   project_id = var.project_id
-}
-
-
-resource "google_storage_bucket" "terraform_state" {
-  name                        = "terraform-state-${var.project_id}"
-  location                    = var.region
-  force_destroy               = true
-  uniform_bucket_level_access = true
-
-  versioning {
-    enabled = true
-  }
 }
 
 output "state_bucket_name" {
