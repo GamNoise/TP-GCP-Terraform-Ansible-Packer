@@ -3,3 +3,7 @@ resource "google_artifact_registry_repository" "repo" {
   format       = "DOCKER"
   location     = var.location
 }
+
+output "repository_name" {
+  value = google_artifact_registry_repository.repo.name
+}

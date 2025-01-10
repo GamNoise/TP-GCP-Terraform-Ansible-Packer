@@ -27,8 +27,3 @@ variable "subnet_id" {
   description = "ID of the subnetwork"
   type        = string
 }
-
-variable "region" {
-  description = "Region for GCP resources"
-  type        = string
-}

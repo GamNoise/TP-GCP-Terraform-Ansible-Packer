@@ -1,34 +1,33 @@
 resource "google_compute_instance_template" "template" {
   name_prefix  = "app-template-"
   machine_type = "e2-medium"
-  
+
   disk {
     source_image = var.instance_image
     auto_delete  = true
     boot         = true
   }
-  
+
   network_interface {
     subnetwork = var.subnet_id
   }
-  
+
   lifecycle {
     create_before_destroy = true
   }
 }
 
 resource "google_compute_region_instance_group_manager" "mig" {
-  name = "app-mig"
-  
+  name               = "app-mig"
   base_instance_name = "app"
-  region            = var.region
-  
+  region             = var.region
+
   version {
     instance_template = google_compute_instance_template.template.id
   }
-  
+
   target_size = 2
-  
+
   named_port {
     name = "http"
     port = 8080
@@ -37,7 +36,7 @@ resource "google_compute_region_instance_group_manager" "mig" {
 
 resource "google_compute_region_health_check" "health_check" {
   name = "app-health-check"
-  
+
   http_health_check {
     port = 8080
   }
@@ -47,11 +46,11 @@ resource "google_compute_region_backend_service" "backend" {
   name                  = "app-backend"
   protocol              = "HTTP"
   load_balancing_scheme = "INTERNAL_MANAGED"
-  
+
   backend {
     group = google_compute_region_instance_group_manager.mig.instance_group
   }
-  
+
   health_checks = [google_compute_region_health_check.health_check.id]
 }
 
