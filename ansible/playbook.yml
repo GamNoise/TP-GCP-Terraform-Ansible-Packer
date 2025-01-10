@@ -1,0 +1,28 @@
+- name: Configure the app
+  hosts: all
+  tasks:
+    - name: Copy Go binary
+      copy:
+        src: ../src/main
+        dest: /usr/local/bin/app-binary
+        mode: '0755'
+
+    - name: Configure systemd service
+      copy:
+        content: |
+          [Unit]
+          Description=Go Application
+          After=network.target
+          [Service]
+          ExecStart=/usr/local/bin/app-binary
+          Restart=always
+          User=root
+          [Install]
+          WantedBy=multi-user.target
+        dest: /etc/systemd/system/app.service
+
+    - name: Enable and start service
+      systemd:
+        name: app
+        state: started
+        enabled: yes

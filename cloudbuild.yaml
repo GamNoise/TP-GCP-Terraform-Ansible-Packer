@@ -7,19 +7,23 @@ steps:
       - |
         gcloud secrets scan . || echo "No secrets found";
 
-  # Étape 2 : Scan de vulnérabilités des dépendances
+  # Étape 2 : Scan de vulnérabilités
   - name: 'gcr.io/cloud-builders/docker'
     args: ['run', '--rm', 'anchore/scan', '.']
 
-  # Étape 3 : Build de l'application Go
+  # Étape 3 : Build du binaire Go
   - name: 'gcr.io/cloud-builders/go'
-    args: ['build', '-o', 'app-binary', '.']
+    args: ['build', '-o', 'app-binary', './src']
 
-  # Étape 4 : Build et push de l'image Docker
+  # Étape 4 : Construction et push de l'image Docker
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'gcr.io/$PROJECT_ID/app-binary:${_VERSION}', '.']
+    args: ['build', '-t', 'gcr.io/cesi-2024-447110/app-binary:${_VERSION}', '.']
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/$PROJECT_ID/app-binary:${_VERSION}']
+    args: ['push', 'gcr.io/cesi-2024-447110/app-binary:${_VERSION}']
+
+  # Étape 5 : Création de l'image avec Packer
+  - name: 'hashicorp/packer'
+    args: ['build', 'packer/packer.json']
 
 substitutions:
   _VERSION: "1.0.0"
