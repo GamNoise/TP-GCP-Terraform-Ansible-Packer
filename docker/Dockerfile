@@ -18,7 +18,6 @@ RUN go mod download
 
 # Copy du Code
 COPY . .
-
 # Build de l'app
 RUN go build -o /bin/$APP_NAME ./
 
